@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
+import { samar } from '../helpers/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +11,7 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+    return this.userModel.findAll<User>();
   }
 
   async findOne(id: number): Promise<User | null> {
@@ -18,6 +19,9 @@ export class UsersService {
   }
 
   async create(user: Partial<User>): Promise<User> {
+    if (user.password) {
+      user.password = await samar(user.password);
+    }
     return this.userModel.create(user);
   }
 
