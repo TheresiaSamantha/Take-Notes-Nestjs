@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         autoLoadModels: true, // Automatically load models
-        synchronize: true, // Auto-create tables (for development, disable in production)
+        synchronize: false, // IMPORTANT: Use migrations instead of auto-sync
       }),
       inject: [ConfigService],
     }),

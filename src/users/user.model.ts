@@ -5,7 +5,9 @@ import {
   Table,
   PrimaryKey,
   AutoIncrement,
+  HasMany,
 } from 'sequelize-typescript';
+import { Note } from '../notes/note.model';
 
 @Table
 export class User extends Model {
@@ -22,4 +24,7 @@ export class User extends Model {
 
   @Column
   declare password: string;
+
+  @HasMany(() => Note)
+  declare notes: Note[];
 }
