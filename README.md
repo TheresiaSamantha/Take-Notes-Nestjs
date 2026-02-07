@@ -8,6 +8,8 @@ List endpoints yang tersedia:
 - `POST /users/login`
 - `DELETE /users`
 
+Routes yang memperlukan authentication:
+
 # 1. GET /
 
 Deskripsi
