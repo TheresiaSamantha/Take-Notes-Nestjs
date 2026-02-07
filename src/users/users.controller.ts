@@ -16,12 +16,20 @@ export class UsersController {
   async create(
     @Body() body: { name: string; email: string; password: string },
   ): Promise<{ message: string; data: User }> {
-    const data = await this.usersService.create(
-      body.name,
-      body.email,
-      body.password,
-    );
-    return { message: 'User baru berhasil dibuat', data };
+    try {
+      const data = await this.usersService.create(
+        body.name,
+        body.email,
+        body.password,
+      );
+      if (!data) {
+        throw new Error('Gagal membuat user baru');
+      }
+      return { message: 'User baru berhasil dibuat', data };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   @Delete(':id')

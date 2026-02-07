@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { samar } from '../helpers/bcrypt';
@@ -19,6 +19,10 @@ export class UsersService {
   }
 
   async create(name: string, email: string, password: string): Promise<User> {
+    const emailExists = await this.userModel.findOne({ where: { email } });
+    if (emailExists) {
+      throw new BadRequestException('Email sudah terdaftar');
+    }
     if (password) {
       password = await samar(password);
     }
