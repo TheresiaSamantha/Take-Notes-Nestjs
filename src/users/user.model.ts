@@ -1,4 +1,3 @@
-// src/users/user.model.ts
 import {
   Column,
   Model,
