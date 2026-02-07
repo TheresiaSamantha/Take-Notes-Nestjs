@@ -1,0 +1,14 @@
+# Sequelize CLI configuration files (JavaScript files for CLI)
+src/database/config/**/*.js
+src/database/migrations/**/*.js
+src/database/seeders/**/*.js
+
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Testing
+coverage/
