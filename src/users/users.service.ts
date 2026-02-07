@@ -25,7 +25,7 @@ export class UsersService {
     return this.userModel.create({ name, email, password });
   }
 
-  async login(id: number, user: Partial<User>): Promise<[number, User[]]> {
+  async update(id: number, user: Partial<User>): Promise<[number, User[]]> {
     return this.userModel.update(user, {
       where: { id },
       returning: true, // Return the updated record

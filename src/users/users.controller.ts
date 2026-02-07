@@ -26,6 +26,8 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<{ message: string }> {
+    console.log(id);
+
     await this.usersService.deleteUser(Number(id));
     return { message: 'User berhasil dihapus' };
   }
