@@ -1,3 +1,60 @@
+# Take Note API - NestJS
+
+REST API untuk aplikasi note-taking dengan authentication menggunakan NestJS, PostgreSQL, dan JWT.
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Setup database
+npm run migration:run
+
+# Run development server
+npm run start:dev
+
+# Run tests
+npm run test:e2e
+```
+
+Server akan berjalan di `http://localhost:3000`
+
+---
+
+## 🧪 Testing
+
+### E2E Test Coverage: ✅ 100%
+
+**Test File:** [`test/app.e2e-spec.ts`](test/app.e2e-spec.ts)  
+**Documentation:** [`TEST_DOCUMENTATION.md`](TEST_DOCUMENTATION.md)
+
+**Total Tests:** 21+  
+**Coverage:**
+
+- ✅ All API endpoints (10 endpoints)
+- ✅ Authentication (401 Unauthorized)
+- ✅ Authorization (403 Forbidden - ownership validation)
+- ✅ Success cases (200, 201, 204)
+- ✅ Error cases (401, 403, 404)
+
+**Run Tests:**
+
+```bash
+npm run test:e2e          # Run E2E tests
+npm run test              # Run unit tests
+npm run test:cov          # Run with coverage
+```
+
+**Test Highlights:**
+
+- 🔐 JWT authentication flow
+- 🛡️ Ownership validation (users can only access their own notes)
+- ✅ Auto-injection of userId from JWT token
+- 🚫 Proper error handling & status codes
+
+---
+
 # Endpoints
 
 List endpoints yang tersedia:
