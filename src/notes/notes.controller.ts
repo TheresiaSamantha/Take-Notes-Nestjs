@@ -23,25 +23,33 @@ export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Get()
-  someProtectedRoute(@Req() req: Request) {
-    return {
-      message: `This is a protected route. Your user ID is ${req.userId}`,
-    };
+  async getAllMyNotes(@Req() req: Request): Promise<Note[]> {
+    // Hanya tampilkan notes milik user yang login
+    return this.notesService.findByUser(req.userId as number);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Note | null> {
-    return this.notesService.findOne(+id);
-  }
+  async findOne(
+    @Param('id') id: string,
+    @Req() req: Request,
+  ): Promise<Note | null> {
+    const note = await this.notesService.findOne(+id);
 
-  @Get('user/:userId')
-  async findByUser(@Param('userId') userId: string): Promise<Note[]> {
-    return this.notesService.findByUser(+userId);
+    // Validasi: user hanya bisa lihat note miliknya sendiri
+    if (note && note.userId !== req.userId) {
+      throw new ForbiddenException('You can only view your own notes');
+    }
+
+    return note;
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() note: Partial<Note>): Promise<Note> {
+  async create(
+    @Body() note: Partial<Note>,
+    @Req() req: Request,
+  ): Promise<Note> {
+    note.userId = req.userId;
     return this.notesService.create(note);
   }
 
@@ -49,24 +57,33 @@ export class NotesController {
   async update(
     @Param('id') id: string,
     @Body() note: Partial<Note>,
+    @Req() req: Request,
   ): Promise<{ affected: number; data: Note[] }> {
+    // Cek ownership: pastikan note milik user yang login
+    const existingNote = await this.notesService.findOne(+id);
+    if (!existingNote) {
+      throw new ForbiddenException('Note not found');
+    }
+    if (existingNote.userId !== req.userId) {
+      throw new ForbiddenException('You can only update your own notes');
+    }
+
     const [affected, data] = await this.notesService.update(+id, note);
     return { affected, data };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.notesService.remove(+id);
-  }
-
-  @UseGuards(AuthGuard)
-  @Delete(':id')
-  deleteUser(@Param('id') id: string, @Req() req: Request) {
-    // Pastikan user hanya bisa hapus dirinya sendiri
-    if (req.userId !== Number(id)) {
-      throw new ForbiddenException('Cannot delete other user');
+  async remove(@Param('id') id: string, @Req() req: Request): Promise<void> {
+    // Cek ownership: pastikan note milik user yang login
+    const existingNote = await this.notesService.findOne(+id);
+    if (!existingNote) {
+      throw new ForbiddenException('Note not found');
     }
-    // ... rest of code
+    if (existingNote.userId !== req.userId) {
+      throw new ForbiddenException('You can only delete your own notes');
+    }
+
+    return this.notesService.remove(+id);
   }
 }
