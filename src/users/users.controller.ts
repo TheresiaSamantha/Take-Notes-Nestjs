@@ -33,12 +33,11 @@ export class UsersController {
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }): Promise<{
-    message: string;
-    data: { id: number; name: string; email: string };
-  }> {
+  async login(
+    @Body() body: { email: string; password: string },
+  ): Promise<{ accessToken: string }> {
     const data = await this.usersService.login(body.email, body.password);
-    return { message: 'Login berhasil', data };
+    return data;
   }
 
   @Delete(':id')

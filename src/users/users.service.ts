@@ -6,12 +6,14 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { samar, match } from '../helpers/bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
+    private jwtService: JwtService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -36,7 +38,7 @@ export class UsersService {
   async login(
     email: string,
     password: string,
-  ): Promise<{ id: number; name: string; email: string }> {
+  ): Promise<{ accessToken: string }> {
     //Find user by email
     const user = await this.userModel.findOne({ where: { email } });
     if (!user) {
@@ -47,13 +49,14 @@ export class UsersService {
     if (!passwordMatch) {
       throw new UnauthorizedException('Email atau password salah');
     }
-    // TODO: Generate JWT token
-    // Return user data without password (security!)
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    };
+
+    // Generate JWT token
+    return this.generateUserTokens(user.id);
+  }
+
+  generateUserTokens(userId: number): { accessToken: string } {
+    const accessToken = this.jwtService.sign({ userId });
+    return { accessToken };
   }
 
   async update(id: number, user: Partial<User>): Promise<[number, User[]]> {

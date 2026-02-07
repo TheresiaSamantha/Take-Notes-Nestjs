@@ -109,12 +109,7 @@ _Response (201 - Created)_
 
 ```json
 {
-  "message": "Login berhasil",
-  "data": {
-    "id": "number",
-    "name": "string",
-    "email": "string"
-  }
+  "accessToken": "string"
 }
 ```
 

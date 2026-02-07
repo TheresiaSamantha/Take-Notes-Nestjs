@@ -6,17 +6,28 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { UsersModule } from './users/users.module';
 import { NotesModule } from './notes/notes.module';
 import { JwtModule } from '@nestjs/jwt';
+import config from './config/config';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), // Load .env file globally
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      cache: true,
+      load: [config],
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret'),
+      }),
+      global: true,
+      inject: [ConfigService],
+    }),
     DatabaseModule,
     UsersModule,
     NotesModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
-    }),
   ],
   controllers: [AppController],
   providers: [AppService],
