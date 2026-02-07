@@ -12,7 +12,7 @@ export class UsersController {
     return { message: 'Semua User', data };
   }
 
-  @Post()
+  @Post('register')
   async create(
     @Body() body: { name: string; email: string; password: string },
   ): Promise<{ message: string; data: User }> {
@@ -30,6 +30,15 @@ export class UsersController {
       console.log(error);
       throw error;
     }
+  }
+
+  @Post('login')
+  async login(@Body() body: { email: string; password: string }): Promise<{
+    message: string;
+    data: { id: number; name: string; email: string };
+  }> {
+    const data = await this.usersService.login(body.email, body.password);
+    return { message: 'Login berhasil', data };
   }
 
   @Delete(':id')

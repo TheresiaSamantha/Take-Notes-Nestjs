@@ -4,7 +4,8 @@ List endpoints yang tersedia:
 
 - `GET /`
 - `GET /users`
-- `POST /users`
+- `POST /users/register`
+- `POST /users/login`
 - `DELETE /users`
 
 # 1. GET /
@@ -53,7 +54,7 @@ _Response (200 - OK)_
 }
 ```
 
-# 3. POST /users
+# 3. POST /users/register
 
 Deskripsi
 
@@ -87,7 +88,47 @@ _Response (201 - Created)_
 }
 ```
 
-# 4. DELETE /users
+# 4. POST /users/login
+
+Deskripsi
+
+- Login user sehinga mendapatkan token
+
+Request:
+
+- body:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+_Response (201 - Created)_
+
+```json
+{
+  "message": "Login berhasil",
+  "data": {
+    "id": "number",
+    "name": "string",
+    "email": "string"
+  }
+}
+```
+
+_Response (401 - Unauthorized)_
+
+```json
+{
+  "message": "Email atau password salah",
+  "error": "Unauthorized",
+  "statusCode": 401
+}
+```
+
+# 5. DELETE /users
 
 Deskripsi
 
