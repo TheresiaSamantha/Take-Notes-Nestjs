@@ -51,10 +51,13 @@ export class NotesService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ message: string }> {
     const note = await this.findOne(id);
     if (note) {
       await note.destroy();
     }
+    return {
+      message: `Note dengan id ${id} dan title "${note?.title}" berhasil dihapus`,
+    };
   }
 }
