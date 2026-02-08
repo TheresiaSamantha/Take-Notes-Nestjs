@@ -74,7 +74,10 @@ export class NotesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string, @Req() req: Request): Promise<void> {
+  async remove(
+    @Param('id') id: string,
+    @Req() req: Request,
+  ): Promise<{ message: string }> {
     // Cek ownership: pastikan note milik user yang login
     const existingNote = await this.notesService.findOne(+id);
     if (!existingNote) {
